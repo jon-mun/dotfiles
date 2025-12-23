@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: MIT-0
+# tasks file for t480-hw
+---
+- name: Install Hardware Utilities
+  become: true
+  pacman:
+    name:
+      - tlp
+      - tlp-rdw
+      - brightnessctl
+      - bluez
+      - bluez-utils
+      - thermald  # Prevents Intel thermal throttling
+    state: present
+
+- name: Configure TLP for Battery Longevity
+  become: true
+  lineinfile:
+    path: /etc/tlp.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    # Stop charging at 80% to preserve Battery 1 & 2 health
+    - { regexp: '^START_CHARGE_THRESH_BAT0', line: 'START_CHARGE_THRESH_BAT0=75' }
+    - { regexp: '^STOP_CHARGE_THRESH_BAT0', line: 'STOP_CHARGE_THRESH_BAT0=80' }
+    - { regexp: '^START_CHARGE_THRESH_BAT1', line: 'START_CHARGE_THRESH_BAT1=75' }
+    - { regexp: '^STOP_CHARGE_THRESH_BAT1', line: 'STOP_CHARGE_THRESH_BAT1=80' }
+  notify: Restart TLP
+
+- name: Enable Hardware Services
+  become: true
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop:
+    - tlp
+    - bluetooth
+    - thermald
+
+- name: Install Throttled (Thermal Fix) from AUR
+  become: true
+  shell: yay -S --needed --noconfirm throttled
+
+- name: Enable and Start Throttled service
+  become: true
+  systemd:
+    name: throttled
+    enabled: true
+    state: started
+

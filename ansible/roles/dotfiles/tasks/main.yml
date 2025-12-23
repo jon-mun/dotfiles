@@ -1,0 +1,20 @@
+#SPDX-License-Identifier: MIT-0
+# tasks file for dotfiles
+---
+- name: Ensure GNU Stow is installed
+  become: true
+  pacman:
+    name: stow
+    state: present
+
+- name: Apply Stow Configurations
+  shell: "stow -R {{ item }}"
+  args:
+    chdir: "{{ ansible_env.HOME }}/dotfiles"
+  loop:
+    - i3
+    - nvim
+    - kitty
+    - shell
+  register: stow_result
+  changed_when: "'LINK' in stow_result.stderr or 'UNLINK' in stow_result.stderr"

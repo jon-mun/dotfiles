@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT-0
+---
+- name: Restart TLP
+  become: true
+  ansible.builtin.systemd_service:
+    name: tlp.service
+    state: restarted
+
+- name: Restart Throttled
+  become: true
+  ansible.builtin.systemd_service:
+    name: throttled.service
+    state: restarted

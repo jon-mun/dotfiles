@@ -1,0 +1,42 @@
+---
+- name: Provision ThinkPad T480
+  hosts: localhost
+  connection: local
+  vars:
+    # Define lists here or in a separate vars file
+    system_packages:
+      - git
+      - base-devel
+      - firefox
+      - ripgrep
+      - fd
+
+  roles:
+    - role: t480-hw
+    - role: packages
+    - role: dotfiles
+
+  tasks:
+    - name: Install General Developer Packages
+      become: true
+      pacman:
+        name: "{{ system_packages }}"
+        state: present
+
+    - name: Ensure yay (AUR Helper) is installed
+      stat:
+        path: /usr/bin/yay
+      register: yay_check
+
+    - name: Bootstrap yay if missing
+      when: not yay_check.stat.exists
+      block:
+        - name: Clone yay
+          git:
+            repo: https://aur.archlinux.org/yay.git
+            dest: /tmp/yay
+        - name: Build yay
+          command: makepkg -si --noconfirm
+          args:
+            chdir: /tmp/yay
+    

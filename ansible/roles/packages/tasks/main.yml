@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: MIT-0
+---
+
+- name: Install Packages
+  become: true
+  pacman:
+    name:
+      - tmux
+    state: present
+
+- name: Install LazyVim Dependencies & Fonts
+  become: true
+  pacman:
+    name:
+      - ttf-jetbrains-mono-nerd  # The Font
+      - ripgrep                  # For Telescope live_grep
+      - fd                       # For Telescope find_files
+      - unzip                    # Required by Mason to install LSPs
+      - luarocks                 # Required for some Neovim plugins
+      - xclip                    # THE SECRET TO PBCOPY (for i3/X11)
+      - xsel                     # Alternative clipboard helper
+      - nodejs                   # Required for many LSPs via Mason
+      - npm                      # Required for many LSPs via Mason
+      - python-pip               # Required for some Python LSPs
+      - lazygit
+    state: present
