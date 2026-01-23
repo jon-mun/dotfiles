@@ -24,3 +24,20 @@
       - python-pip               # Required for some Python LSPs
       - lazygit
     state: present
+
+- name: Install Fingerprint Support Packages
+  become: true
+  pacman:
+    name:
+      - fprintd
+      - imagemagick # Sometimes needed for driver processing
+    state: present
+# Requires python-validity AUR installation using yay.
+
+- name: Enable fprintd service
+  become: true
+  systemd:
+    name: fprintd
+    enabled: true
+    state: started
+

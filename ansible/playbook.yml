@@ -13,8 +13,11 @@
 
   roles:
     - role: t480-hw
+      tags: [hardware]
     - role: packages
+      tags: [packages]
     - role: dotfiles
+      tags: [dotfiles]
 
   tasks:
     - name: Install General Developer Packages
