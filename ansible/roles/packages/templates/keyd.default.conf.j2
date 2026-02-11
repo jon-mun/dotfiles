@@ -1,0 +1,43 @@
+[ids]
+*
+
+[main]
+# --- 1. Physical Layout Swap ---
+# Physical Alt becomes the "Command" layer (custom layer defined below)
+leftalt = layer(command)
+# Physical Win becomes Alt
+leftmeta = layer(alt)
+
+# --- 2. CapsLock to Escape ---
+capslock = esc
+
+# --- 3. The Command Layer (Mac Behavior for GUI Apps) ---
+# This layer inherits from Meta (:M).
+# If you press a key NOT listed here (like Enter), it sends Meta+Key.
+# If you press a key listed here (like C), it sends Ctrl+Key.
+[command:M]
+c = C-c
+v = C-v
+x = C-x
+t = C-t
+w = C-w
+a = C-a
+z = C-z
+f = C-f
+r = C-r
+l = C-l
+
+# --- 4. Terminal Specifics (Kitty) ---
+# We define a special layer just for the terminal.
+# Goal: Cmd+C/V should send Ctrl+Shift+C/V (Standard Linux Term Copy/Paste)
+# Goal: Cmd+Key should acts like Ctrl+Key for everything else (e.g. Cmd+L to clear screen)
+[kitty]
+filter = kitty
+leftalt = layer(kitty_command)
+
+[kitty_command:C]
+# Copy/Paste (Maps Cmd+C to Ctrl+Shift+C)
+c = C-S-c
+v = C-S-v
+# New Tab (Maps Cmd+T to Ctrl+Shift+T)
+t = C-S-t

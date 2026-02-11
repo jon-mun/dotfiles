@@ -8,6 +8,34 @@
       - tmux
     state: present
 
+- name: Install keyd (Key Remapper)
+  become: true
+  pacman:
+    name:
+      - keyd
+    state: present
+  tags:
+    - keyd
+
+- name: Enable keyd service
+  become: true
+  systemd:
+    name: keyd
+    enabled: true
+    state: started
+  tags:
+    - keyd
+
+- name: Template keyd default.conf to a /etc/keyd/default.conf
+  become: true
+  ansible.builtin.template:
+    src: ../templates/keyd.default.conf.j2
+    dest: /etc/keyd/default.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart keyd service
+
 - name: Install LazyVim Dependencies & Fonts
   become: true
   pacman:
@@ -25,19 +53,19 @@
       - lazygit
     state: present
 
-- name: Install Fingerprint Support Packages
-  become: true
-  pacman:
-    name:
-      - fprintd
-      - imagemagick # Sometimes needed for driver processing
-    state: present
-# Requires python-validity AUR installation using yay.
+# - name: Install Fingerprint Support Packages
+#   become: true
+#   pacman:
+#     name:
+#       - fprintd
+#       - imagemagick # Sometimes needed for driver processing
+#     state: present
+# # Requires python-validity AUR installation using yay.
 
-- name: Enable fprintd service
-  become: true
-  systemd:
-    name: fprintd
-    enabled: true
-    state: started
-
+# - name: Enable fprintd service
+#   become: true
+#   systemd:
+#     name: fprintd
+#     enabled: true
+#     state: started
+#

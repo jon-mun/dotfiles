@@ -1,3 +1,7 @@
-#SPDX-License-Identifier: MIT-0
+# SPDX-License-Identifier: MIT-0
 ---
-# handlers file for packages
+- name: Restart keyd service
+  become: true
+  ansible.builtin.systemd:
+    name: "keyd.service"
+    state: restarted
