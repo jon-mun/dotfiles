@@ -10,6 +10,8 @@
       - firefox
       - ripgrep
       - fd
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
 
   roles:
     - role: t480-hw
